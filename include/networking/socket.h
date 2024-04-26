@@ -11,6 +11,8 @@
 
 namespace networking
 {
+	using port_number_t = uint16_t;
+
 	enum class protocol
 	{
 		tcp,
@@ -35,6 +37,7 @@ namespace networking
 	{
 		public:
 			// Constructors / destructor
+			socket();
 			socket(protocol, ip_version);
 			~socket();
 
@@ -58,10 +61,22 @@ namespace networking
 	class address
 	{
 		public:
+			// Constructors
 			constexpr explicit address() : _valid(false), _address({}), _length(0), _family(AF_UNSPEC) {}
 			constexpr explicit address(const sockaddr& a, socklen_t length, sa_family_t family) :
 				_valid(true), _address(a), _length(length), _family(family) {}
 
+			// Copy-construction / copy-assignment
+			address(const address&);
+			address& operator=(const address&);
+
+			// Move-construction / move-assignment
+			address(address&&);
+			address& operator=(address&&);
+
+			// Comparison operator
+
+			// Public interface
 			const sockaddr& get() const { return _address; }
 			constexpr bool valid() const { return _valid; }
 			constexpr socklen_t length() const { return _length; }
@@ -71,15 +86,16 @@ namespace networking
 			result_string host(bool numeric_only = true) const;
 			result_string port() const;
 			result_string to_string(bool numeric_host_only = true) const;
-			uint16_t port_number() const;
+			port_number_t port_number() const;
 
+			// Static definition of invalid address
 			static constexpr address invalid() { return address {}; }
 
 		private:
-			const bool _valid;
-			const sockaddr _address;
-			const socklen_t _length;
-			const sa_family_t _family;	// AF_INET / AF_INET6
+			bool _valid;
+			sockaddr _address;
+			socklen_t _length;
+			sa_family_t _family;	// AF_INET / AF_INET6
 	};
 
 	address create_address(std::string hostname, uint16_t port, protocol, bool resolve_hostname = false, ip_version = ip_version::any);

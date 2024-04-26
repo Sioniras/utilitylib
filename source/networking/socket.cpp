@@ -11,6 +11,11 @@ namespace networking
 	// Constructors / destructor
 	// ----------------------------------------------------------------------
 	// Constructor
+	socket::socket() : _socket(uninitialized_socket)
+	{
+	}
+
+	// Constructor
 	socket::socket(protocol p, ip_version ipv) : _socket(uninitialized_socket)
 	{
 		auto inet_protocol = (ipv == ip_version::ipv6 ? AF_INET6 : AF_INET);
@@ -62,6 +67,47 @@ namespace networking
 	}
 
 	// ----------------------------------------------------------------------
+	// Address copy/move construction/assignment
+	// ----------------------------------------------------------------------
+	// Copy-construction
+	address::address(const address& a) :
+		_valid(a._valid),
+		_address(a._address),
+		_length(a._length),
+		_family(a._family)
+	{
+	}
+
+	// Copy-assignment
+	address& address::operator=(const address& a)
+	{
+		_valid = a._valid;
+		_address = a._address;
+		_length = a._length;
+		_family = a._family;
+		return *this;
+	}
+
+	// Move-construction (just copies here, no need to invalidate moved object)
+	address::address(address&& a) :
+		_valid(a._valid),
+		_address(a._address),
+		_length(a._length),
+		_family(a._family)
+	{
+	}
+
+	// Move-assignment (just copies here, no need to invalidate moved object)
+	address& address::operator=(address&& a)
+	{
+		_valid = a._valid;
+		_address = a._address;
+		_length = a._length;
+		_family = a._family;
+		return *this;
+	}
+
+	// ----------------------------------------------------------------------
 	// Address public interface
 	// ----------------------------------------------------------------------
 	result_string address::host(bool numeric_only) const
@@ -108,7 +154,7 @@ namespace networking
 		return { result, result == 0 ? (std::string(hostname) + ':' + std::string(service)) : gai_strerror(result) };
 	}
 
-	uint16_t address::port_number() const
+	port_number_t address::port_number() const
 	{
 		auto p = port();
 		if(p.code != 0)
