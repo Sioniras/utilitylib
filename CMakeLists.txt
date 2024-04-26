@@ -34,12 +34,21 @@ set(SOURCES_TARGET_LIBRARY
 	source/networking/win32/socket_definitions.h
 
 	# Networking module
+	include/networking/networking.h
 	include/networking/socket.h
 	source/networking/socket.cpp
+	include/networking/address.h
+	source/networking/address.cpp
+
+	# Networking/TCP
+	include/networking/tcp/connection.h
+	source/networking/tcp/connection.cpp
+	include/networking/tcp/listener.h
+	source/networking/tcp/listener.cpp
+
+	# Networking/UDP
 	include/networking/udp_socket.h
 	source/networking/udp_socket.cpp
-	include/networking/tcp_socket.h
-	source/networking/tcp_socket.cpp
 
 	# Data structures
 	include/containers/circular_buffer.h

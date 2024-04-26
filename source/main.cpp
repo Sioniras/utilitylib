@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <networking/tcp_socket.h>
+#include <networking/tcp/connection.h>
 
 int main(int argc, const char** argv)
 {

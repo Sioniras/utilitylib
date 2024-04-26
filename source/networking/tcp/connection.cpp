@@ -1,7 +1,7 @@
 /////////////////////////////////////////////////////////////////////////
 // TCP connection implementation
 /////////////////////////////////////////////////////////////////////////
-#include <networking/tcp_socket.h>
+#include <networking/tcp/connection.h>
 
 namespace networking::tcp
 {
@@ -71,68 +71,18 @@ namespace networking::tcp
 	// ----------------------------------------------------------------------
 	// Non-member non-friend functions
 	// ----------------------------------------------------------------------
-
-	// --- Listener ---
-	// ----------------------------------------------------------------------
-	// Constructors / destructor
-	// ----------------------------------------------------------------------
-	listener::listener(incoming_connection_callback& callback, port_number_t port, bool use_ipv6) :
-		_socket(),
-		_status(status::invalid),
-		_error({0, "No error"}),
-		_callback(callback),
-		_address()
+	std::ostream& operator<<(std::ostream& s, connection::status state)
 	{
-		_address = create_host_address(port, protocol::tcp, use_ipv6 ? ip_version::ipv6 : ip_version::ipv4);
-		networking::socket s { protocol::tcp, _address.ip_version_value() };
-		_socket = std::move(s);
+		switch(state)
+		{
+			case connection::status::invalid: s << std::string("invalid");break;
+			case connection::status::open: s << std::string("open");break;
+			case connection::status::closed: s << std::string("closed");break;
+			case connection::status::shutdown: s << std::string("shutdown");break;
+			case connection::status::error: s << std::string("error");break;
+			default: s << std::string("unknown");break;
+		}
 
-		auto result = ::bind(_socket.get(), &(_address.get()), _address.length());
-		if(result == 0)
-		{
-			_status = status::bound;
-		}
-		else
-		{
-			_error = get_error_information();
-			_status = status::error;
-		}
-	}
-
-	// Destructor
-	listener::~listener()
-	{
-		stop();
-	}
-
-	// ----------------------------------------------------------------------
-	// Public interface
-	// ----------------------------------------------------------------------
-	// Start listening on the bound address
-	// queue_length: Size of queue for connections to accept.
-	bool listener::start(uint16_t queue_length)
-	{
-		auto result = ::listen(_socket.get(), static_cast<int>(queue_length));
-		if(result == 0)
-		{
-			_status = status::listening;
-			return true;
-		}
-		else
-		{
-			_error = get_error_information();
-			_status = status::error;
-		}
-		return false;
-	}
-
-	// Stops listening for connections
-	void listener::stop()
-	{
-		if(_status == status::bound || _status == status::listening)
-		{
-			_socket.close();
-			_status = status::stopped;
-		}
+		return s;
 	}
 }

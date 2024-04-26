@@ -4,6 +4,7 @@
 #pragma once
 
 #include <networking/socket.h>
+#include <networking/address.h>
 
 namespace networking::udp
 {

@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////////////////////
 #include <gtest/gtest.h>
 
-#include <networking/socket.h>
+#include <networking/address.h>
 
 TEST(networking_address, create_address_tcp_ipv4)
 {
