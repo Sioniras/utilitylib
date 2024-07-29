@@ -27,6 +27,11 @@ namespace networking
 			_socket = s;
 	}
 
+	// Constructor
+	socket::socket(socket_type s) : _socket(s)
+	{
+	}
+
 	// Destructor
 	socket::~socket()
 	{

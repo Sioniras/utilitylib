@@ -41,10 +41,13 @@ set(SOURCES_TARGET_LIBRARY
 	source/networking/address.cpp
 
 	# Networking/TCP
+	include/networking/tcp/tcp.h
 	include/networking/tcp/connection.h
 	source/networking/tcp/connection.cpp
 	include/networking/tcp/listener.h
 	source/networking/tcp/listener.cpp
+	include/networking/tcp/connection_manager.h
+	source/networking/tcp/connection_manager.cpp
 
 	# Networking/UDP
 	include/networking/udp_socket.h

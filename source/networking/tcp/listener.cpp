@@ -2,6 +2,7 @@
 // TCP listener implementation
 /////////////////////////////////////////////////////////////////////////
 #include <networking/tcp/listener.h>
+#include <networking/tcp/connection.h>
 
 namespace networking::tcp
 {
@@ -66,6 +67,60 @@ namespace networking::tcp
 			_socket.close();
 			_status = status::stopped;
 		}
+	}
+
+	// Accepts a connection
+	// Note: This is a BLOCKING function!
+	bool listener::accept()
+	{
+		struct sockaddr_storage client;
+		socklen_t length = sizeof(client);
+		socket_type client_socket = ::accept(_socket.get(), reinterpret_cast<struct sockaddr*>(&client), &length);
+		address client_address { *reinterpret_cast<sockaddr*>(&client), length, client.ss_family };
+
+		if(is_valid_socket(client_socket))
+		{
+			tcp::connection client_connection { networking::socket(client_socket), client_address };
+			_callback.on_new_connection(std::move(client_connection));
+			return true;
+		}
+
+		return false;
+	}
+
+	// Accepts a connection
+	// Note: This is a BLOCKING function!
+	bool listener::poll_accept(uint16_t timeout_ms)
+	{
+		struct pollfd handle[1];
+		handle[0].fd = _socket.get();
+		handle[0].events = POLLIN;
+
+		// Note: Use WSAPoll with Winsock?
+		int number_of_events = poll(handle, 1, static_cast<int>(timeout_ms));
+		if(number_of_events > 0 && (handle[0].revents & POLLIN))
+		{
+			struct sockaddr_storage client;
+			socklen_t length = sizeof(client);
+			socket_type client_socket = ::accept(_socket.get(), reinterpret_cast<struct sockaddr*>(&client), &length);
+			address client_address { *reinterpret_cast<sockaddr*>(&client), length, client.ss_family };
+
+			if(is_valid_socket(client_socket))
+			{
+				tcp::connection client_connection { networking::socket(client_socket), client_address };
+				_callback.on_new_connection(std::move(client_connection));
+			}
+			else
+			{
+				auto error = get_error_information();
+				tcp::connection client_connection { networking::socket(client_socket), client_address, tcp::connection::status::error, error };
+				_callback.on_new_connection(std::move(client_connection));
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	// ----------------------------------------------------------------------

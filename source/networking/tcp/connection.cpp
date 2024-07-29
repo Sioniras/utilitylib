@@ -10,6 +10,7 @@ namespace networking::tcp
 	// ----------------------------------------------------------------------
 	// Constructor
 	connection::connection(const networking::address& target) :
+		_address(target),
 		_socket(protocol::tcp, target.ip_version_value()),
 		_status(status::invalid),
 		_error({0, "No error"})
@@ -27,6 +28,15 @@ namespace networking::tcp
 				_status = status::error;
 			}
 		}
+	}
+
+	// Constructor
+	connection::connection(networking::socket&& s, const address& a, status state, const socket_error_information& e) :
+		_address(a),
+		_socket(std::move(s)),
+		_status(_socket.valid() ? state : status::invalid),
+		_error(e)
+	{
 	}
 
 	// Destructor
@@ -66,6 +76,20 @@ namespace networking::tcp
 	{
 		_socket.close();
 		_status = status::closed;
+	}
+
+	// Receive data from connection
+	ssize_t connection::receive(uint8_t* buffer, std::size_t buffer_size)
+	{
+		// Returns -1 on error, otherwise number of bytes received
+		return ::recv(_socket.get(), buffer, buffer_size, 0);
+	}
+
+	// Send data through connection
+	ssize_t connection::send(const uint8_t* buffer, std::size_t number_of_elements_to_send)
+	{
+		// Returns -1 on error, otherwise number of bytes sent
+		return ::send(_socket.get(), buffer, number_of_elements_to_send, 0);
 	}
 
 	// ----------------------------------------------------------------------

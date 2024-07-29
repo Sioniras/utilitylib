@@ -12,6 +12,7 @@
 #include <string>
 #include <cstring>
 #include <cerrno>
+#include <poll.h>
 
 namespace networking
 {

@@ -49,4 +49,6 @@ namespace networking
 
 	address create_address(std::string hostname, uint16_t port, protocol, bool resolve_hostname = false, ip_version = ip_version::any);
 	address create_host_address(uint16_t port, protocol, ip_version = ip_version::any);
+
+	std::ostream& operator<<(std::ostream&, const address&);
 }

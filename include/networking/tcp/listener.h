@@ -7,29 +7,14 @@
 
 #include <networking/socket.h>
 #include <networking/address.h>
+#include <networking/tcp/tcp.h>
 
 namespace networking::tcp
 {
-	class connection;
-
-	class incoming_connection_callback
-	{
-		public:
-			virtual ~incoming_connection_callback() {}
-			virtual void on_new_connection(connection&&) = 0;
-	};
-
 	class listener
 	{
 		public:
-			enum class status
-			{
-				invalid,
-				bound,		// Called bind, but not listen
-				listening,	// Called bind and listen
-				stopped,	// Socket closed
-				error,
-			};
+			using status = listener_status;
 
 		public:
 			// Constructors / destructor
@@ -47,6 +32,9 @@ namespace networking::tcp
 			// Public interface
 			bool start(uint16_t queue_length = 10);
 			void stop();
+			bool accept();									// !! BLOCKING !!
+			bool poll_accept(uint16_t timeout_ms = 500);	// !! BLOCKING, unless timeout is zero !!
+
 			status state() const { return _status; }
 			const networking::socket& socket() const { return _socket; }
 			const socket_error_information& error() const { return _error; }

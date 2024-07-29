@@ -13,6 +13,7 @@ namespace networking
 			// Constructors / destructor
 			socket();
 			socket(protocol, ip_version);
+			explicit socket(socket_type);
 			~socket();
 
 			// Disallow copying

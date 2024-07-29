@@ -232,4 +232,10 @@ namespace networking
 		address_info_helper helper { std::to_string(port), hints };
 		return helper.retrieve();
 	}
+
+	std::ostream& operator<<(std::ostream& s, const address& a)
+	{
+		s << a.to_string().value;
+		return s;
+	}
 }
