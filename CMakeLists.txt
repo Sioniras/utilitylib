@@ -50,8 +50,9 @@ set(SOURCES_TARGET_LIBRARY
 	source/networking/tcp/connection_manager.cpp
 
 	# Networking/UDP
-	include/networking/udp_socket.h
-	source/networking/udp_socket.cpp
+	include/networking/udp/udp.h
+	include/networking/udp/socket.h
+	source/networking/udp/socket.cpp
 
 	# Data structures
 	include/containers/circular_buffer.h
