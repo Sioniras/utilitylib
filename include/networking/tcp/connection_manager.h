@@ -20,6 +20,14 @@ namespace networking::tcp
 			explicit connection_manager(data_received_callback&);
 			~connection_manager();
 
+			// Disallow copying
+			connection_manager(const connection_manager&) = delete;
+			connection_manager& operator=(const connection_manager&) = delete;
+
+			// Move construction/assignment
+			connection_manager(connection_manager&&);
+			connection_manager& operator=(connection_manager&&);
+
 			// incoming_connection_callback interface
 			void on_new_connection(connection&&) override;
 

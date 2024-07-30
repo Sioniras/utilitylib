@@ -27,6 +27,31 @@ namespace networking::tcp
 	}
 
 	// ----------------------------------------------------------------------
+	// Move construction / assignment
+	// ----------------------------------------------------------------------
+	// Move-construction
+	connection_manager::connection_manager(connection_manager&& cm) :
+		_connections(std::move(cm._connections)),
+		_listeners(std::move(cm._listeners)),
+		_callback(cm._callback),
+		_pollfd(std::move(cm._pollfd)),
+		_dirty(true)
+	{
+	}
+
+	// Move-assignment
+	connection_manager& connection_manager::operator=(connection_manager&& cm)
+	{
+		_connections = std::move(cm._connections);
+		_listeners = std::move(cm._listeners);
+		_callback = cm._callback;
+		_pollfd = std::move(cm._pollfd);
+		_dirty = true;
+
+		return *this;
+	}
+
+	// ----------------------------------------------------------------------
 	// Public interface
 	// ----------------------------------------------------------------------
 	// Accept new connections
