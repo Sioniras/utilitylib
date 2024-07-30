@@ -39,6 +39,31 @@ namespace networking::tcp
 	}
 
 	// ----------------------------------------------------------------------
+	// Move construction / assignment
+	// ----------------------------------------------------------------------
+	// Move-construction
+	listener::listener(listener&& l) :
+		_socket(std::move(l._socket)),
+		_status(std::move(l._status)),
+		_error(std::move(l._error)),
+		_callback(l._callback),
+		_address(std::move(l._address))
+	{
+	}
+
+	// Move-assignment
+	listener& listener::operator=(listener&& l)
+	{
+		_socket = std::move(l._socket);
+		_status = std::move(l._status);
+		_error = std::move(l._error);
+		_callback = l._callback;
+		_address = std::move(l._address);
+
+		return *this;
+	}
+
+	// ----------------------------------------------------------------------
 	// Public interface
 	// ----------------------------------------------------------------------
 	// Start listening on the bound address

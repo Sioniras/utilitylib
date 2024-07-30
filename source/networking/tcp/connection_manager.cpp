@@ -29,6 +29,12 @@ namespace networking::tcp
 	// ----------------------------------------------------------------------
 	// Public interface
 	// ----------------------------------------------------------------------
+	// Accept new connections
+	void connection_manager::on_new_connection(connection&& new_connection)
+	{
+		_connections.push_back(std::move(new_connection));
+	}
+
 	// Creates a new listener that lets the same connection manager instance handle new connections
 	const listener& connection_manager::add_listener(port_number_t port, bool use_ipv6)
 	{

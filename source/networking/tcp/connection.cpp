@@ -48,14 +48,22 @@ namespace networking::tcp
 	// Move construction / assignment
 	// ----------------------------------------------------------------------
 	// Move-construction
-	connection::connection(connection&& s) : _socket(std::move(s._socket))
+	connection::connection(connection&& s) :
+		  _address(std::move(s._address)),
+		  _socket(std::move(s._socket)),
+		  _status(std::move(s._status)),
+		  _error(std::move(s._error))
 	{
 	}
 
 	// Move-assignment
 	connection& connection::operator=(connection&& s)
 	{
+		_address = std::move(s._address);
 		_socket = std::move(s._socket);
+		_status = std::move(s._status);
+		_error = std::move(s._error);
+
 		return *this;
 	}
 
