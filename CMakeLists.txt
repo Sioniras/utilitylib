@@ -54,6 +54,12 @@ set(SOURCES_TARGET_LIBRARY
 	include/networking/udp/socket.h
 	source/networking/udp/socket.cpp
 
+	# Bytes module
+	include/bytes/byte_strategy.h
+	include/bytes/serialize.h
+	include/bytes/buffer.h
+	source/bytes/buffer.cpp
+
 	# Data structures
 	include/containers/circular_buffer.h
 	include/containers/safe_queue.h
