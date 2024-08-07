@@ -78,7 +78,8 @@ set(SOURCES_TARGET_EXE
 # -------------------------------------------------
 set(SOURCES_TARGET_TESTS
 	tests/test_main.cpp
-	tests/address.cpp
+	tests/networking/address.cpp
+	tests/bytes/serialization.cpp
 )
 
 # -------------------------------------------------
